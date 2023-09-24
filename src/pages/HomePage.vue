@@ -1,11 +1,44 @@
 <script setup>
 
+import SideBar from "@/components/SideBar.vue";
+import Inventory from "@/components/Inventory.vue";
+import SkeletonFooter from "@/components/SkeletonFooter.vue";
+import Test from "@/components/Test.vue";
 </script>
 
 <template>
-  Home
+  <div class="home-page">
+    <div class="home-page__sideBare">
+      <SideBar/>
+    </div>
+    <div class="home-page__inventory">
+      <Inventory/>
+    </div>
+    <div class="home-page__skeleton-footer">
+      <SkeletonFooter/>
+    </div>
+<!--    <Test/>-->
+  </div>
+
+
 </template>
 
-<style scoped>
-
+<style scoped lang="scss">
+.home-page {
+  display: grid;
+  grid-template-areas:
+"sideBare inventory"
+"skeleton-footer skeleton-footer";
+  gap: 1rem;
+  justify-content: center;
+  &__sideBare {
+    grid-area: sideBare;
+  }
+  &__inventory {
+    grid-area: inventory;
+  }
+  &__skeleton-footer {
+    grid-area: skeleton-footer;
+  }
+}
 </style>
