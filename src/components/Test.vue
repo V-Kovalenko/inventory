@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, ref, watch} from "vue";
+import {onMounted, ref, watch, watchEffect} from "vue";
 import ModalWindow from "@/components/ModalWindow.vue";
 /*--начальные  данные-->>>> */
 let id = 0 // id каждого элемента
@@ -10,27 +10,47 @@ const items = ref([
   ...new Array(22).fill({id: null, url: null, count: null}),
 
 ])
+
+const reset = ref([
+  {id: id++, url: new URL('@/assets/images/image-green.svg', import.meta.url), count: 11},
+  {id: id++, url: new URL('@/assets/images/image-red.svg', import.meta.url), count: 21},
+  {id: id++, url: new URL('@/assets/images/image-blue.svg', import.meta.url), count: 31},
+  ...new Array(22).fill({id: null, url: null, count: null}),
+
+])
 /*--начальные  данные--<<<< */
 const dragIndex = ref(null)
 const onDragStar = (e, item, index) => {  //  данные элемента который тянем
   dragIndex.value = index
+  const dataToTransfer = {item: item.count, index}
+  const jsonData = JSON.stringify(dataToTransfer);
   e.dataTransfer.dropEffect = 'move'
   e.dataTransfer.effectAllowed = 'move'
-  e.dataTransfer.setData('item', index.toString()) // добавляем индекс элемента, который тянем
+  // e.dataTransfer.setData('item', index.toString()) // добавляем индекс элемента, который тянем
+  e.dataTransfer.setData('item', jsonData.toString()) // добавляем индекс элемента, который тянем
 }
+let transferredData
 const onDrugDrop = (e) => {
   e.preventDefault()
-  const itemIndex = parseInt(e.dataTransfer.getData('item')) // получаем индекс элемента
+  const itemIndex = e.dataTransfer.getData('item') // получаем индекс элемента
+  transferredData = JSON.parse(itemIndex);
+  console.log('itemIndex: ', transferredData)
   const targetItemIndex = Array.from(e.target.parentNode.children).indexOf(e.target); // получаем индекс элемента на который буем менять
-  const temp = items.value[itemIndex] // идет переприсваивание данных элементов
-  items.value[itemIndex] = items.value[targetItemIndex] // идет переприсваивание данных элементов
+  const temp = items.value[ transferredData.index] // идет переприсваивание данных элементов
+  items.value[ transferredData.index] = items.value[targetItemIndex] // идет переприсваивание данных элементов
   items.value[targetItemIndex] = temp // идет переприсваивание данных элементов
   dragIndex.value = null
   window.localStorage.setItem('DROP', JSON.stringify(items.value)) // сохраняем в локалсторе, для сохранения позиции элементов поле перезагрузки страницы
+
 }
-// onMounted(() => {  // монтируем актуальные данные пи загрузки страницы
-//   items.value = JSON.parse(localStorage.getItem('DROP'))
-// })
+watchEffect(() => {
+  window.localStorage.setItem('DROP', JSON.stringify(items.value))
+})
+const storedItems = window.localStorage.getItem('DROP')
+onMounted(() => {  // монтируем актуальные данные пи загрузки страницы
+  // items.value = JSON.parse(localStorage.getItem('DROP'))
+  items.value = JSON.parse(storedItems)
+})
 const toggleModalWindow = ref(false) //начальное значение модального окна
 const getToggleModalWindow = (it) => { // закрыть модальное окно
   toggleModalWindow.value = !toggleModalWindow.value
@@ -57,9 +77,12 @@ const deleteCount = (it, it2) => { // удаление count из items
   }
   it.value = '' // обнуляем Input
   it2.value = !it2.value // закрываем выбор кнопок отмена или подтвердить
+
   return currentItem.value.count = resultCount
 }
-
+const getReset = () => {
+  items.value = reset.value
+}
 </script>
 
 <template>
@@ -96,6 +119,7 @@ const deleteCount = (it, it2) => { // удаление count из items
           @deleteCount="deleteCount"
       />
     </div>
+    <button @click="getReset" class="inventory__reset">reset</button>
   </div>
 </template>
 
@@ -143,6 +167,9 @@ const deleteCount = (it, it2) => { // удаление count из items
     bottom: 0;
     right: 0;
     color: #c7c3c3;
+  }
+  &__reset {
+    position: absolute;
   }
 }
 

@@ -12,8 +12,8 @@ import Test from "@/components/Test.vue";
       <SideBar/>
     </div>
     <div class="home-page__inventory">
-        <Test/>
-<!--      <Inventory/>-->
+<!--        <Test/>-->
+      <Inventory/>
     </div>
     <div class="home-page__skeleton-footer">
       <SkeletonFooter/>
