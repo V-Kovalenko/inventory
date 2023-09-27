@@ -11,10 +11,15 @@ const props = defineProps({
   initToggleModal: {
     type: Boolean,
     default: false
+  },
+  toggleModalWindow: {
+    type: Boolean,
+    required: true
   }
 })
+
 const sendEmit = () => {
-  emit('close', toggleButtonDelete)
+  emit('close')
 }
 const sendEmitDeleteCount = () => {
   emit('deleteCount', inputState, toggleButtonDelete)
@@ -23,7 +28,7 @@ const modalStyles = computed(() => { // стили для плавного по�
   return [
     'modal-window',
     {
-      'modal-window_close': props.itemInventory
+      'modal-window_close': props.toggleModalWindow
     }
   ]
 })
@@ -32,6 +37,7 @@ const toggleButtonDelete = ref(false) // начальное значение к�
 const changeToggleBtn = () => { // функция изменения состояния toggleButtonDelete
   toggleButtonDelete.value = !toggleButtonDelete.value
 }
+
 
 const inputState = ref('')
 </script>
@@ -89,7 +95,7 @@ const inputState = ref('')
   min-height: 100%;
 
   transition: all 0.4s ease-in-out;
-  transform: translateX(-100%);
+  opacity: 1;
 
   &__close {
     position: absolute;
@@ -124,7 +130,9 @@ const inputState = ref('')
 }
 
 .modal-window_close {
-  transform: translateX(0);
+  transform: translateX(100%);
+  opacity: 0;
+  position: absolute;
 }
 
 .content {
@@ -215,7 +223,7 @@ const inputState = ref('')
     grid-area: input;
     background: linear-gradient(0deg, #4D4D4D, #4D4D4D),
     linear-gradient(0deg, #262626, #262626);
-    width: 210px;
+    width: 200px;
     height: 40px;
     border-radius: 4px;
     margin-bottom: 1rem;

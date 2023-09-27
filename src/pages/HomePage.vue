@@ -3,7 +3,6 @@
 import SideBar from "@/components/SideBar.vue";
 import Inventory from "@/components/Inventory.vue";
 import SkeletonFooter from "@/components/SkeletonFooter.vue";
-import Test from "@/components/Test.vue";
 </script>
 
 <template>
@@ -12,7 +11,6 @@ import Test from "@/components/Test.vue";
       <SideBar/>
     </div>
     <div class="home-page__inventory">
-<!--        <Test/>-->
       <Inventory/>
     </div>
     <div class="home-page__skeleton-footer">

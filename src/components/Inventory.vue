@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, ref, watch, watchEffect} from "vue";
+import {computed, onMounted, ref, watch, watchEffect} from "vue";
 import ModalWindow from "@/components/ModalWindow.vue";
 /*--начальные  данные-->>>> */
 let id = 0 // id каждого элемента
@@ -10,13 +10,8 @@ const items = ref([
   ...new Array(22).fill({id: null, url: null, count: null}),
 
 ])
-
 const reset = ref([
-  {id: id++, url: new URL('@/assets/images/image-green.svg', import.meta.url), count: 11},
-  {id: id++, url: new URL('@/assets/images/image-red.svg', import.meta.url), count: 21},
-  {id: id++, url: new URL('@/assets/images/image-blue.svg', import.meta.url), count: 31},
-  ...new Array(22).fill({id: null, url: null, count: null}),
-
+    ...items.value
 ])
 /*--начальные  данные--<<<< */
 const dragIndex = ref(null)
@@ -34,29 +29,27 @@ const onDrugDrop = (e) => {
   e.preventDefault()
   const itemIndex = e.dataTransfer.getData('item') // получаем индекс элемента
   transferredData = JSON.parse(itemIndex);
-  console.log('itemIndex: ', transferredData)
   const targetItemIndex = Array.from(e.target.parentNode.children).indexOf(e.target); // получаем индекс элемента на который буем менять
   const temp = items.value[ transferredData.index] // идет переприсваивание данных элементов
   items.value[ transferredData.index] = items.value[targetItemIndex] // идет переприсваивание данных элементов
   items.value[targetItemIndex] = temp // идет переприсваивание данных элементов
   dragIndex.value = null
   window.localStorage.setItem('DROP', JSON.stringify(items.value)) // сохраняем в локалсторе, для сохранения позиции элементов поле перезагрузки страницы
-
 }
-// watchEffect(() => {
-//   window.localStorage.setItem('DROP', JSON.stringify(items.value))
-// })
-// const storedItems = window.localStorage.getItem('DROP')
-onMounted(() => {  // монтируем актуальные данные пи загрузки страницы
-  items.value = JSON.parse(localStorage.getItem('DROP'))
+const setItemsToLocalStorage = () => { //функция для обновления LocalStorage
+  window.localStorage.setItem('DROP', JSON.stringify(items.value))
+}
 
-})
-const toggleModalWindow = ref(false) //начальное значение модального окна
-const getToggleModalWindow = (it) => { // закрыть модальное окно
-  toggleModalWindow.value = !toggleModalWindow.value
-  if (it) {
-    it.value = !it.value
+onMounted(() => {  // монтируем актуальные данные пи загрузки страницы
+  const parsedItems = JSON.parse(localStorage.getItem('DROP'))
+  if (parsedItems) {
+    items.value = parsedItems
+    reset.value = parsedItems
   }
+})
+const toggleModalWindow = ref(true) //начальное значение модального окна
+const getToggleModalWindow = () => { // закрыть модальное окно
+  toggleModalWindow.value = !toggleModalWindow.value
 }
 
 const currentItem = ref('') // Элементы, которые передаем в модальное окно
@@ -78,11 +71,17 @@ const deleteCount = (it, it2) => { // удаление count из items
   it.value = '' // обнуляем Input
   it2.value = !it2.value // закрываем выбор кнопок отмена или подтвердить
 
-  return currentItem.value.count = resultCount
+  currentItem.value.count = resultCount
+  setItemsToLocalStorage()
 }
 const getReset = () => {
-  items.value = reset.value
+  items.value = [...reset.value]
+  setItemsToLocalStorage()
+  // window.localStorage.setItem('DROP', JSON.stringify(items.value))
+
 }
+
+
 </script>
 
 <template>
@@ -99,13 +98,14 @@ const getReset = () => {
           @dragstart="onDragStar($event, item, index)"
           draggable="true"
 
+
       >
 
         <div class="inventory__item-card"
              @dragstart.prevent
              @click="functions(item)"
         >
-          <img :src="item.url" alt="">
+          <img :src="item.url" alt="" class="inventory__img">
           <span class="inventory__count-element" v-if="item.count">{{ item.count }}</span>
         </div>
 
@@ -113,10 +113,10 @@ const getReset = () => {
 
       <ModalWindow
           @close="getToggleModalWindow"
-          v-show="toggleModalWindow"
           :itemInventory="currentItem"
           :initToggleModal="toggleModalWindow"
           @deleteCount="deleteCount"
+          :toggleModalWindow="toggleModalWindow"
       />
     </div>
     <button @click="getReset" class="inventory__reset">reset</button>
@@ -146,6 +146,7 @@ const getReset = () => {
     justify-content: center;
     align-items: center;
     border-radius: 5px;
+    cursor: pointer;
 
   }
 
@@ -170,6 +171,13 @@ const getReset = () => {
   }
   &__reset {
     position: absolute;
+    background: linear-gradient(0deg, #4D4D4D, #4D4D4D),
+    linear-gradient(0deg, #262626, #262626);
+    color: white;
+    top: 0;
+  }
+  &__img {
+    //pointer-events: inherit;
   }
 }
 
