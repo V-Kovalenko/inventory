@@ -1,7 +1,9 @@
 @import "reset";
+@import "@/assets/colors";
 body {
   min-height: 100vh;
   text-rendering: optimizeSpeed;
   margin: 0 !important;
+  background-color: $bg-color-app;
 }
 

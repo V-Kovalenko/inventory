@@ -18,5 +18,6 @@ import HomePage from "@/pages/HomePage.vue";
   background-color: $bg-color-app;
   min-height: 100vh;
   padding: 1rem;
+  margin: 0 auto;
 }
 </style>

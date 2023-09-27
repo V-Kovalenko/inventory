@@ -12,12 +12,13 @@ import Test from "@/components/Test.vue";
       <SideBar/>
     </div>
     <div class="home-page__inventory">
-      <Inventory/>
+        <Test/>
+<!--      <Inventory/>-->
     </div>
     <div class="home-page__skeleton-footer">
       <SkeletonFooter/>
     </div>
-<!--    <Test/>-->
+
   </div>
 
 
@@ -36,7 +37,9 @@ import Test from "@/components/Test.vue";
   }
   &__inventory {
     grid-area: inventory;
+    position: relative;
   }
+
   &__skeleton-footer {
     grid-area: skeleton-footer;
   }
