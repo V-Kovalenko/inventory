@@ -24,7 +24,6 @@
 
 
   &__item {
-    //background-color: #3C3C3C;
     background-color: $main-color;
     border-radius: 0.625rem;
     display: grid;
@@ -55,20 +54,4 @@
     width: 5rem;
   }
 }
-
-//.item1 {
-//  max-width: 11.875rem;
-//  height: 1.625rem;
-//  //margin-bottom: 12rem;
-//
-//}
-//.item2 {
-//  width: 9.6875rem;
-//  height: 1rem;
-//  //background-color: red;
-//}
-//.item3 {
-//  width: 9.6875rem;
-//  height: 1rem;
-//}
 </style>

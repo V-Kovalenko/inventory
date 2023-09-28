@@ -23,9 +23,6 @@
   max-width: 65rem;
   border: 1px solid $bg-color;
   &__container {
-    //display: flex;
-    //justify-content: center;
-    //align-items: center;
     width: 100%;
   }
   &__item {
